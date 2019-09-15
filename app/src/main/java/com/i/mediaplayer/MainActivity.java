@@ -16,8 +16,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] songNameList;
     private RecyclerView.Adapter musicAdapter;
     private RecyclerView songlist;
+    private RecyclerView.LayoutManager layoutManager;
     private ArrayList<Music> musicArrayList;
 
 
@@ -45,17 +48,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
+        songlist = findViewById(R.id.songView);
+        layoutManager = new LinearLayoutManager(this);
+        songlist.setLayoutManager(layoutManager);
         songlist.setHasFixedSize(true);
 
-        indexList = new String[length];
-        songNameList = new String[length];
 
         sharedPrefConfig = new SharedPrefConfig(getApplicationContext());
 
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadSongs(){
         musicArrayList = new ArrayList<>();
         getSongs();
-        musicAdapter = new MusicAdapter(this,this.songNameList);
+        musicAdapter = new MusicAdapter(this,songNameList);
         songlist.setAdapter(musicAdapter);
     }
 
@@ -103,17 +105,25 @@ public class MainActivity extends AppCompatActivity {
         Uri songURI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor songCursor = contentResolver.query(songURI,null,null,null,null);
         length = songCursor.getCount();
+        indexList = new String[length];
+        songNameList = new String[length];
+        Log.d("SongLength",length+"");
         if(songCursor!=null && songCursor.moveToFirst()){
             int count=0;
+            int intPath = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
+            int intSongName = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             do{
-                String path = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                String songName = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                String path = songCursor.getString(intPath);
+                String songName = songCursor.getString(intSongName);
                 Music music = new Music(songName,path);
                 musicArrayList.add(music);
                 songNameList[count] = songName;
                 indexList[count] = path;
                 count++;
-            }while (songCursor.moveToNext());
+            }while(songCursor.moveToNext());
+        }
+        else{
+            Toast.makeText(getApplicationContext(),"No songs present",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -153,6 +163,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
+            case R.id.refresh:
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
+                    loadSongs();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"We need your permission to show you songs", Toast.LENGTH_LONG).show();
+                }
+                break;
             case R.id.permission:
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(getApplicationContext(),"STORAGE PERMISSION ALREADY GRANTED",Toast.LENGTH_LONG).show();
