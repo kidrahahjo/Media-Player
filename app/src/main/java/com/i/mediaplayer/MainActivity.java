@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPrefConfig sharedPrefConfig;
     private static final int REQUEST_STORAGE = 123;
     private int length;
-    private String[] indexList;
+    private String[] pathList;
     private String[] songNameList;
     private RecyclerView.Adapter musicAdapter;
     private RecyclerView songlist;
@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             loadSongs();
-
         }
     }
 
@@ -102,23 +101,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void getSongs() {
         ContentResolver contentResolver = getContentResolver();
-        Uri songURI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri songURI = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor songCursor = contentResolver.query(songURI,null,null,null,null);
         length = songCursor.getCount();
-        indexList = new String[length];
+        pathList = new String[length];
         songNameList = new String[length];
         Log.d("SongLength",length+"");
         if(songCursor!=null && songCursor.moveToFirst()){
             int count=0;
             int intPath = songCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-            int intSongName = songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+            int intSongName = songCursor.getColumnIndex(android.provider.MediaStore.Audio.Media.TITLE);
             do{
                 String path = songCursor.getString(intPath);
                 String songName = songCursor.getString(intSongName);
                 Music music = new Music(songName,path);
                 musicArrayList.add(music);
                 songNameList[count] = songName;
-                indexList[count] = path;
+                pathList[count] = path;
                 count++;
             }while(songCursor.moveToNext());
         }
@@ -172,11 +171,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.permission:
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(getApplicationContext(),"STORAGE PERMISSION ALREADY GRANTED",Toast.LENGTH_LONG).show();
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+                    permissionCheck();
                 }
                 else{
-                    permissionCheck();
+                    Toast.makeText(getApplicationContext(),"STORAGE PERMISSION ALREADY GRANTED",Toast.LENGTH_LONG).show();
+
                 }
                 break;
             case R.id.about:
