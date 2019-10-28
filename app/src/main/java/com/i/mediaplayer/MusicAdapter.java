@@ -1,6 +1,7 @@
 package com.i.mediaplayer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder>{
     private ArrayList<Music> musicArrayList;
-    private Context context;
+    public Context context;
 
     public MusicAdapter(Context context, ArrayList<Music> music) {
         this.context = context;
@@ -24,11 +25,17 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         public TextView musicNameTV;
         public MyViewHolder(View v) {
             super(v);
-
+            final Context context = v.getContext();
             musicNameTV = v.findViewById(R.id.musicNameTV);
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent in = new Intent(context,musicService.class);
+                    int position = getAdapterPosition();
+                    musicInfo.setPosition(position);
+                    //Show the Music Activity
+                    context.startService(in);
+
                 }
             });
         }
@@ -54,6 +61,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     public int getItemCount() {
         return musicArrayList.size();
     }
+
+
 
 
 }

@@ -95,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
     private void loadSongs(){
         musicArrayList = new ArrayList<>();
         getSongs();
-        musicAdapter = new MusicAdapter(this,songNameList);
+        musicInfo.setMusicInfo(musicArrayList);
+        musicAdapter = new MusicAdapter(this,musicArrayList);
         songlist.setAdapter(musicAdapter);
     }
 
