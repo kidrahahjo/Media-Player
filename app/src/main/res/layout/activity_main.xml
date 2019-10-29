@@ -16,7 +16,9 @@
         android:minHeight="?attr/actionBarSize"
         app:contentInsetLeft="8dp"
         app:contentInsetStart="8dp"
-        app:titleTextColor="@android:color/white"></android.support.v7.widget.Toolbar>
+        app:titleTextColor="@android:color/white">
+    </android.support.v7.widget.Toolbar>
+
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

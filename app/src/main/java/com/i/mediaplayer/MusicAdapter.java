@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,14 +28,16 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         public MyViewHolder(View v) {
             super(v);
             final Context context = v.getContext();
-            musicNameTV = v.findViewById(R.id.musicNameTV);
+
+            LinearLayout ll = (LinearLayout)v;
+            musicNameTV = (TextView)ll.findViewById(R.id.musicNameTV);
+
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent in = new Intent(context,musicService.class);
-                    int position = getAdapterPosition();
-                    musicInfo.setPosition(position);
-                    //Show the Music Activity
+                    musicInfo.setPosition(getAdapterPosition());
+//                    //Show the Music Activity
                     context.startService(in);
 
                 }
@@ -46,7 +50,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View musicView = (TextView)inflater.inflate(R.layout.song_list,viewGroup,false);
+        View musicView = (View)inflater.inflate(R.layout.song_list,viewGroup,false);
         MyViewHolder vh = new MyViewHolder(musicView);
         return vh;
     }

@@ -14,6 +14,6 @@ public class Music {
     }
 
     public String getPath() {
-        return musicName;
+        return path;
     }
 }
