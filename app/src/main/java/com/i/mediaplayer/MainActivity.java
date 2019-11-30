@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements musicInterface{
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         songlist = findViewById(R.id.songView);
+        songlist.setNestedScrollingEnabled(false);
 
         max = findViewById(R.id.maxTime);
         current = findViewById(R.id.currentTime);
