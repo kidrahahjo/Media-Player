@@ -8,10 +8,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
         <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -31,7 +27,8 @@
                    android:layout_width="match_parent"
                    android:layout_height="300dp"
                    android:orientation="vertical"
-                   android:gravity="center_horizontal|bottom">
+                   android:gravity="center_horizontal|bottom"
+                   app:layout_collapseMode="parallax">
 
                    <ImageView
                        android:layout_width="150dp"
@@ -93,7 +90,7 @@
                    android:layout_height="wrap_content"
                    android:background="@color/colorPrimary"
                    android:minHeight="?attr/actionBarSize"
-                   app:layout_collapseMode="parallax"
+                   app:layout_collapseMode="pin"
                    app:contentInsetLeft="8dp"
                    app:contentInsetStart="8dp"
                    app:titleTextColor="@android:color/white"/>
@@ -102,6 +99,10 @@
 
         </android.support.design.widget.AppBarLayout>
 
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/songView"
             android:layout_width="match_parent"
@@ -109,6 +110,6 @@
             android:background="#ffffff"
             android:padding="8dp"
             android:scrollbars="vertical" />
+    </android.support.v4.widget.NestedScrollView>
 
-    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
