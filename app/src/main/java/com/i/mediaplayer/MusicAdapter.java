@@ -21,25 +21,32 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     public MusicAdapter(Context context, ArrayList<Music> music) {
         this.context = context;
         this.musicArrayList = music;
+
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView musicNameTV;
+        public TextView artistNameTV;
+        private musicInterface myMusicInt;
+
         public MyViewHolder(View v) {
             super(v);
             final Context context = v.getContext();
 
+            try {
+                myMusicInt = ((musicInterface) context);
+            } catch (ClassCastException e) {
+                Toast.makeText(context,"ERROR OCCURRED, PLEASE TRY AGAIN",Toast.LENGTH_LONG).show();
+            }
+
             LinearLayout ll = (LinearLayout)v;
             musicNameTV = (TextView)ll.findViewById(R.id.musicNameTV);
+            artistNameTV = ll.findViewById(R.id.artistNameTV);
 
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent in = new Intent(context,musicService.class);
-                    musicInfo.setPosition(getAdapterPosition());
-//                    //Show the Music Activity
-                    context.startService(in);
-
+                    myMusicInt.startMusic(getAdapterPosition());
                 }
             });
         }
@@ -59,13 +66,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         Music m = musicArrayList.get(i);
         myViewHolder.musicNameTV.setText(m.getMusicName());
+        myViewHolder.artistNameTV.setText(m.getArt());
     }
 
     @Override
     public int getItemCount() {
         return musicArrayList.size();
     }
-
 
 
 

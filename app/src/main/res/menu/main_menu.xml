@@ -17,4 +17,19 @@
         android:title="About"
         app:showAsAction="never">
     </item>
+    <item
+        android:id="@+id/prev"
+        android:title="Next Song"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_fast_rewind_black_24dp"/>
+    <item
+        android:id="@+id/playpause"
+        android:title="Next Song"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_play_arrow_black_24dp"/>
+    <item
+        android:id="@+id/next"
+        android:title="Next Song"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_fast_forward_black_24dp"/>
 </menu>
