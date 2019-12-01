@@ -43,6 +43,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import static com.i.mediaplayer.App.CHANNEL_1_ID;
+
 public class MainActivity extends AppCompatActivity implements musicInterface{
     private SharedPrefConfig sharedPrefConfig;
     private static final int REQUEST_STORAGE = 123;
@@ -68,8 +70,10 @@ public class MainActivity extends AppCompatActivity implements musicInterface{
     TextView artistTV;
     SeekBar seekBar;
     NotificationCompat.Builder builder;
-    NotificationManager notificationManager;
-    RemoteViews collapsedView;
+    public String channelID = "kidrahahjo";
+    NotificationManager nm;
+
+
     private Handler mHandler = new Handler();
 
 
@@ -104,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements musicInterface{
 
         permissionCheck();
 
+        nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -123,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements musicInterface{
 
             }
         });
+
+        sendNotification();
 
     }
 
@@ -276,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements musicInterface{
         seekBar.setMax((int)Math.round(maxTime/1000.0));
         isPlaying = true;
         updateMenu();
-        createNotification();
+        sendNotification();
         MainActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -340,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements musicInterface{
         String maxS = convertTime(maxTime);
         max.setText(maxS);
         seekBar.setMax((int)Math.round(maxTime/1000.0));
-        createNotification();
+        sendNotification();
         isPlaying = true;
         updateMenu();
     }
@@ -362,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements musicInterface{
         max.setText(maxS);
         seekBar.setMax((int)Math.round(maxTime/1000.0));
         setNames();
-        createNotification();
+        sendNotification();
         isPlaying = true;
         updateMenu();
     }
@@ -386,50 +393,59 @@ public class MainActivity extends AppCompatActivity implements musicInterface{
 
     //////Notification Work
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Music Player";
-            String description = "On going music's notification";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel("kidrahahjo", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            notificationManager.createNotificationChannel(channel);
-            builder.setChannelId("kidrahahjo");
-        }
-    }
+    private void sendNotification(){
 
-    private void createNotification(){
-        collapsedView = new RemoteViews(getPackageName(), R.layout.collapsed_notification);
+        //Collapsed View
+        RemoteViews collapsedView = new RemoteViews(getPackageName(), R.layout.collapsed_notification);
         collapsedView.setTextViewText(R.id.musicName,songNameList[position]);
         collapsedView.setTextViewText(R.id.artistName,songArtList[position]);
 
+
+
         Intent leftIntent = new Intent(this, NotificationIntentService.class);
         leftIntent.setAction("left");
-        collapsedView.setOnClickPendingIntent(R.id.back, PendingIntent.getService(this, 0, leftIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+        collapsedView.setOnClickPendingIntent(R.id.backC, PendingIntent.getService(this, 0, leftIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         Intent middleIntent = new Intent(this, NotificationIntentService.class);
-        leftIntent.setAction("middle");
-        collapsedView.setOnClickPendingIntent(R.id.back, PendingIntent.getService(this, 1, middleIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+        middleIntent.setAction("middle");
+        collapsedView.setOnClickPendingIntent(R.id.ppC, PendingIntent.getService(this, 1, middleIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         Intent rightIntent = new Intent(this, NotificationIntentService.class);
-        leftIntent.setAction("right");
-        collapsedView.setOnClickPendingIntent(R.id.back, PendingIntent.getService(this, 2, rightIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+        rightIntent.setAction("right");
+        collapsedView.setOnClickPendingIntent(R.id.frontC, PendingIntent.getService(this, 2, rightIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
-        builder =
-                new NotificationCompat.Builder(this,"notify_001")
-                        .setSmallIcon(R.drawable.ic_music_note_black_24dp)
-                        .setContentTitle("Playing now!!!")
-                        .setAutoCancel(false)
-                        .setCustomContentView(collapsedView)
-                        .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0));
 
-        notificationManager = (android.app.NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        createNotificationChannel();
-        notificationManager.notify(0,builder.build());
+        //Expanded View
+        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.expanded_notification);
+        expandedView.setTextViewText(R.id.musicNameE,songNameList[position]);
+
+
+
+        Intent leftIntentE = new Intent(this, NotificationIntentService.class);
+        leftIntentE.setAction("left");
+        expandedView.setOnClickPendingIntent(R.id.backE, PendingIntent.getService(this, 4, leftIntentE, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        Intent middleIntentE = new Intent(this, NotificationIntentService.class);
+        middleIntentE.setAction("middle");
+        expandedView.setOnClickPendingIntent(R.id.ppE, PendingIntent.getService(this, 5, middleIntentE, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        Intent rightIntentE = new Intent(this, NotificationIntentService.class);
+        rightIntentE.setAction("right");
+        expandedView.setOnClickPendingIntent(R.id.frontE, PendingIntent.getService(this, 6, rightIntentE, PendingIntent.FLAG_UPDATE_CURRENT));
+
+
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+//                .setContentTitle("Playing now")
+//                .setContentText("" + songNameList[position])
+                .setCustomBigContentView(collapsedView)
+                .setCustomBigContentView(expandedView);
+//                .setAutoCancel(false)
+//                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+
+
+        nm.notify(1,notification.build());
     }
+
 }

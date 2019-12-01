@@ -25,7 +25,6 @@ public class NotificationIntentService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         try {
-
             switch (intent.getAction()) {
                 case "left":
                     Handler leftHandler = new Handler(Looper.getMainLooper());
