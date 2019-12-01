@@ -437,12 +437,12 @@ public class MainActivity extends AppCompatActivity implements musicInterface{
 
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-//                .setContentTitle("Playing now")
-//                .setContentText("" + songNameList[position])
+                .setContentTitle("Playing now")
+                .setContentText("" + songNameList[position])
                 .setCustomBigContentView(collapsedView)
-                .setCustomBigContentView(expandedView);
-//                .setAutoCancel(false)
-//                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomBigContentView(expandedView)
+                .setAutoCancel(false)
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle());
 
 
         nm.notify(1,notification.build());
